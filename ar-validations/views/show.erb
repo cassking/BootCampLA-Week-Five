@@ -1,0 +1,10 @@
+
+<p><%= @recipe.title %></p>
+
+<ul>
+  <% @comments.each do |comment| %>
+    <li><%= comment.body %></li>
+  <% end %>
+</ul>
+
+<p><a href='/'>All Recipes</a></p>

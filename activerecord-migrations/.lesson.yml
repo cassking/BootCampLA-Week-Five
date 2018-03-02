@@ -1,0 +1,8 @@
+---
+title: "ActiveRecord Migrations"
+type: "article"
+description: "Describes how to use migrations to change the database schema."
+behaviors:
+  - sinatra
+  - sinatra_activerecord
+tags: "activerecord, sql, migrations"

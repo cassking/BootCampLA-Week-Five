@@ -1,0 +1,43 @@
+<h1>Name:<%= @meetup.name %></h1>
+<p> Description: <%= @meetup.description %></p>
+<p> created by: <%= @creator.username %></p>
+
+<% if @joined == true %>
+     <form action="<%= url("/meetups/#{@meetup.id}/leave") %>" method="POST">
+      <button type="submit" value="submit"> >> Leave this Meetup  << </button>
+    </form>
+ <% else %>
+     <form action="<%= url("/meetups/#{@meetup.id}/join") %>" method="POST">
+      <button type="submit" value="submit"> >> Join This Meetup << </button>
+ <% end %>
+
+ <% if @joined == true %>
+
+  <h4>users(members):</h4>
+    <ul>
+      <% @users.each do | user| %>
+        <li><img style="width:40px;" src ="<%= user.avatar_url %>" /> <%= user.username %></li>
+      <% end %>
+    </ul>
+   <h4>Comments</h4>
+
+    <% @comments.each do |comment| %>
+        <figure>
+          <img style="width:40px;" src="<%= url("#{comment.user.avatar_url}") %>">
+          <figcaption><%= comment.user.username %></figcaption>
+        </figure>
+        <p><%= comment.title %></p>
+        <blockquote><%= comment.body %></blockquote>
+    <% end %>
+
+     <form action="<%= url("/meetups/#{@meetup.id}/comment") %>" method="POST">
+         <label for="title">Title:</label>
+        <input type="text" id="title" name="title">
+          <label for="body">Body:*</label>
+        <textarea type="textarea" id="body" name="body" rows="4" cols="20"></textarea>
+         <button type="submit" value="submit">Add Comment</button>
+     </form>
+
+
+
+  <% end %>

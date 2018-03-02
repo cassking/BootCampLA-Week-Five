@@ -1,0 +1,16 @@
+<% if @error %>
+  <p><%=@error%></p>
+<% end %>
+ <h2>Submit Article here</h2>
+<form action="/articles/new" method="post">
+    <label for="title">Add a Title:</label>
+    <input type="text" id="title" name="title"  >
+<br /><br />
+    <label for="url">Add a URL:</label>
+    <input type="url" id="" name="url" >
+<br /><br />
+    <label for="description">Add a Description:</label>
+    <input type="description" id="description" name="description" >
+    <input type="submit">
+  </form>
+  <p><a href="/">Read All The Articles</a></p>

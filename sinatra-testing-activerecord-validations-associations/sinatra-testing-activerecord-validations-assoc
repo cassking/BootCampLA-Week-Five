@@ -1,0 +1,168 @@
+# Getting Started
+
+```ruby
+$ et get sinatra-testing-activerecord-validations-associations
+$ cd sinatra-testing-activerecord-validations-associations
+$ bundle
+# rename database.example.yml to database.yml
+$ rake db:create
+$ rake db:migrate
+$ rake db:test:prepare
+```
+
+# TDD to the rescue
+ActiveRecord is a wondrous and magical technology.  But with great power comes great responsibility.  If we correctly test for ActiveRecord Associations and Validations, we can let the errors guide us into creating the correct database tables, model level validations, and model level associations!  By drawing out ER diagrams, determining relationship types, and writing out our good ol' plain sentences of "x has many y", "y belongs to x", we will be all set to not have to memorize precisely how to take all the steps needed to make ActiveRecord work the way we want.
+
+# Learning Goals
+
+* Learn how to set up tests for activerecord validations and associations
+
+
+## Let’s start by learning to test validations!
+
+Make sure to edit your `database.example.yml` file to be `database.yml` and have the correct database name. In this example repo, a task will belong to a user and a user can have many tasks. After you `$ rake` to run the initial tests you should see several errors. The first stacktrace should guide you into making the User model.
+
+`app/models/user.rb`
+
+```ruby
+class User < ActiveRecord::Base
+
+end
+```
+
+If you run rake again you’ll notice some failing tests, go to the model test for User and see how the tests are set up for User.
+
+```ruby
+require 'spec_helper'
+
+describe User do
+  it { should have_valid(:first_name).when("Johnny") }
+  it { should_not have_valid(:first_name).when(nil, "") }
+
+  it { should have_valid(:last_name).when("Smith") }
+  it { should_not have_valid(:last_name).when(nil, "") }
+end
+```
+
+Now you will add validations on your model in order to get those to pass.
+
+```ruby
+class User < ActiveRecord::Base
+  validates :first_name, presence: true
+  validates :last_name, presence: true
+end
+```
+
+---
+
+## Testing ActiveRecord Associations
+
+Nice! Now let’s add some tasks into our app. Since we’re big believers in TDD, let’s write out some tests first, including how we can test for ActiveRecord Associations. First make a new file in `spec/models` called `test_spec.rb`
+
+`spec/models/test_spec.rb`
+```ruby
+require 'spec_helper'
+
+describe Task do
+  # check out this dope association test
+  it { should belong_to :user }
+
+  it { should have_valid(:title).when("a title") }
+  it { should_not have_valid(:title).when(nil, "") }
+
+  it { should have_valid(:user).when(User.new) }
+  it { should_not have_valid(:user).when(nil) }
+end
+```
+
+If we run rake, we’ll notice some new errors! Let the tests guide your next steps. Make a class for Task in app/models
+
+`app/models/task.rb`
+```ruby
+class Task < ActiveRecord::Base
+
+end
+```
+
+If we run rake, the tests tells us what to do next, we need a relation (a table) for tasks!
+
+```ruby
+$ rake db:create_migration NAME=create_tasks
+```
+
+```ruby
+# in the new migration
+class CreateTasks < ActiveRecord::Migration
+  def change
+    create_table :tasks do |t|
+      t.string :title, null: false
+      t.text :description
+      t.integer :user_id, null: false
+
+      t.timestamps
+    end
+  end
+end
+
+```
+
+```ruby
+$ rake db:migrate && rake db:rollback && rake db:migrate
+$ rake db:test:prepare
+$ rake
+```
+
+
+Let the tests guide you! You should keep getting a NoMethodError. We keep trying to find the user of a task but that method does not exist yet because we **FORGOT TO SET UP THE AR ASSOCIATION!** (Tip: Go into a pry session and poke around. Save a user, save a task assigned to that user, and see if you can find `Task.first.user`. You should get a deja vu error!)
+
+Let’s update our Task to associate it with User. This association will give us a “method" called `user`. We can call `user` to find the user that belongs to a task.
+
+```ruby
+class Task < ActiveRecord::Base
+  belongs_to :user
+
+  validates :title, presence: true
+  validates :user, presence: true
+end
+```
+
+Almost there! We haven’t set up a test to check to make sure we can find the tasks the belong to a user! Let’s update our User Model test to include a test for the Active Record Association:
+
+```ruby
+require 'spec_helper'
+
+describe User do
+  it { should have_many :tasks }
+
+  it { should have_valid(:first_name).when("Johnny") }
+  it { should_not have_valid(:first_name).when(nil, "") }
+
+  it { should have_valid(:last_name).when("Smith") }
+  it { should_not have_valid(:last_name).when(nil, "") }
+end
+```
+
+Time to red green refactor!
+
+```ruby
+$ rake
+```
+
+Run the tests and let it guide you to update the User model! If you’re lost, draw out your ER diagram, determine the relationship type, and write out the corresponding “x...belongs to…” “y has many…”
+
+```ruby
+class User < ActiveRecord::Base
+  has_many :tasks
+
+  validates :first_name, presence: true
+  validates :last_name, presence: true
+end
+```
+
+Run `rake`.
+
+BOOM! DOPE.
+
+## Conclusion
+
+As we get more comfortable with ActiveRecord, we are able to more fully utilize all the methods that come with this technology.  While ActiveRecord can be used in Sinatra, it comes as part of the Rails technology, so understanding its underlying behavior will serve us well as we move into Rails.  No more need to db_connect!  No more (well, mostly) need to write out SQL queries!  So long as you pay attention to details with setting up ActiveRecord associations and validations correctly and paying attention to the expected behaviors of the methods ActiveRecord gives us, you are well on your way to understanding web development on a broader scale.

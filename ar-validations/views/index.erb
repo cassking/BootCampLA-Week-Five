@@ -1,0 +1,9 @@
+<h1>Brussels Sprout Recipes</h1>
+
+<ul>
+  <% @recipes.each do |recipe| %>
+    <li>
+      <h3><a href='/recipes/<%=recipe.id %>'><%= recipe.title %></a></h3>
+    </li>
+  <% end %>
+</ul>

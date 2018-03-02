@@ -1,0 +1,19 @@
+<h2>Show all articles here TEST</h2>
+<% @articles.each do |one_article| %>
+  <ul>
+    <li> Title:
+      <%= one_article[0] %>
+    </li>
+    <li> Link:
+      <a href="<%= one_article[1] %>" target="_blank">
+        <%= one_article[1] %>
+      </a>
+    </li>
+    <li> Description:
+      <%= one_article[2] %>
+    </li>
+  </ul>
+<% end %>
+<p>
+  << <a href="/articles/new"> TAKE ME TO THE FORM</a>
+</p>
