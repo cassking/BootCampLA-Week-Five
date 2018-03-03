@@ -1,5 +1,7 @@
 <h1>Meetups</h1>
-<a href="/meetups/new">|-- Create a new meetup --|</a>
+<div class="create-leave-join">
+  <a href="/meetups/new">>> Create a new meetup <<</a>
+</div>
 
 <% @meetups.each do |meetup| %>
   <p><%= meetup.id %>. <a href="meetups/<%= meetup.id %>"><%= meetup.name %></a></p>

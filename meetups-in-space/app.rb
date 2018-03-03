@@ -65,7 +65,7 @@ post '/meetups/new' do
     @name = params[:name]
     @location = params[:location]
     @description = params[:description]
-
+    @is_creator = true
     @meetup = Meetup.create(
       name: @name,
       description: @description,
@@ -78,8 +78,28 @@ post '/meetups/new' do
     )
     flash[:notice] = "You've successfully created the meetup #{@meetup.name}"
     redirect "/meetups/#{@meetup.id}"
-
 end
+ post '/meetups/delete' do
+
+    @name = params[:name]
+    @location = params[:location]
+    @description = params[:description]
+    if (@creator = session[:user_id])
+      @meetup = Meetup.where(
+        name: @name,
+        description: @description,
+        location: @location,
+        created_by: @creator
+      ).delete_all
+      Membership.where(
+        user_id: session[:user_id],
+        meetup_id: @meetup.id
+      ).delete_all
+    end
+
+    flash[:notice] = "You've successfully deleted the meetup #{@meetup.name}"
+    redirect "/meetups/"
+ end
 
 get '/meetups/:id' do
   @meetup = Meetup.find(params[:id])
@@ -126,7 +146,7 @@ post '/meetups/:id/comment' do
   @meetup = Meetup.find(params[:id])
   @title = params[:title]
   @body = params[:body]
-  
+
     if @meetup.memberships.exists?(
       user_id: session[:user_id]
     )

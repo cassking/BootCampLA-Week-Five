@@ -8,12 +8,23 @@ a,
 a:visited {
   color: #FFFFFF;
   text-decoration: none;
+
+}
+a:hover,
+a:visited:hover {
+  color: yellow;
+  text-decoration: underline;
+}
+.create-leave-join {
+  border: 1px dashed yellow;
+  padding: 5px;
+  display:inline-block;
 }
 
 .container {
   width: 80%;
   max-width: 800px;
-  margin: 0 auto 150px;
+  margin: 0 auto;
 }
 
 .top-bar {

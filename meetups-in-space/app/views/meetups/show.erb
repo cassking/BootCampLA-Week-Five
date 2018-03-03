@@ -3,12 +3,19 @@
 <p> created by: <%= @creator.username %></p>
 
 <% if @joined == true %>
+
+<div class="create-leave-join">
+
      <form action="<%= url("/meetups/#{@meetup.id}/leave") %>" method="POST">
       <button type="submit" value="submit"> >> Leave this Meetup  << </button>
     </form>
+    </div>
  <% else %>
+ <div class="create-leave-join">
+
      <form action="<%= url("/meetups/#{@meetup.id}/join") %>" method="POST">
       <button type="submit" value="submit"> >> Join This Meetup << </button>
+</div>
  <% end %>
 
  <% if @joined == true %>
