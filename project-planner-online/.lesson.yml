@@ -1,0 +1,12 @@
+---
+title: "Project Planner Online"
+type: "challenge"
+description: "Design a database schema with models to represent a shared project task list."
+tags: "system-check, activerecord, models, migrations"
+behaviors:
+  - sinatra
+  - sinatra_activerecord
+  - ruby_and_rspec
+  - capybara
+ignore:
+- "project-planner-online.md"

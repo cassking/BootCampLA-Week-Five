@@ -1,0 +1,26 @@
+<h1><%= @project.name %></h1>
+
+<p>optional desc: <%= @project.description %></p>
+<p>tasks: blank for now</p>
+<h3>users</h3>
+<ul>
+<% @users.each do | user| %>
+    <li>
+       <%= user.first_name %> <%= user.last_name %>
+     </li>
+    <% end %>
+  </ul>
+<h3>tasks</h3>
+<% if @tasks.exists? %>
+  <ul>
+  <% @tasks.each do | task| %>
+      <li>
+         <%= task.name %>
+       </li>
+      <% end %>
+    </ul>
+    <% else %>
+    <p>no tasks for now</p>
+    <% end %>
+
+<a href="/projects">Back to all projects</a>
